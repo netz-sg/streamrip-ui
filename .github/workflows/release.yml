@@ -66,122 +66,12 @@ jobs:
           name: windows-installer
           path: desktop/release/*.exe
 
-  build-macos-arm64:
-    name: Build macOS Installer (Apple Silicon)
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install streamrip dependencies
-        working-directory: repo
-        run: |
-          pip install poetry
-          poetry install --no-interaction
-
-      - name: Get version from tag
-        id: version
-        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
-
-      - name: Set version in package.json
-        working-directory: desktop
-        run: npm version ${{ steps.version.outputs.VERSION }} --no-git-tag-version --allow-same-version
-
-      - name: Set version in frontend package.json
-        working-directory: desktop/frontend
-        run: npm version ${{ steps.version.outputs.VERSION }} --no-git-tag-version --allow-same-version
-
-      - name: Install frontend dependencies
-        working-directory: desktop/frontend
-        run: npm ci
-
-      - name: Install Electron dependencies
-        working-directory: desktop
-        run: npm ci
-
-      - name: Build & package
-        working-directory: desktop
-        run: npx electron-builder --mac --arm64 --publish=never
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CSC_IDENTITY_AUTO_DISCOVERY: false
-
-      - name: Upload macOS ARM64 artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: macos-installer-arm64
-          path: desktop/release/*.dmg
-
-  build-macos-x64:
-    name: Build macOS Installer (Intel)
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install streamrip dependencies
-        working-directory: repo
-        run: |
-          pip install poetry
-          poetry install --no-interaction
-
-      - name: Get version from tag
-        id: version
-        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
-
-      - name: Set version in package.json
-        working-directory: desktop
-        run: npm version ${{ steps.version.outputs.VERSION }} --no-git-tag-version --allow-same-version
-
-      - name: Set version in frontend package.json
-        working-directory: desktop/frontend
-        run: npm version ${{ steps.version.outputs.VERSION }} --no-git-tag-version --allow-same-version
-
-      - name: Install frontend dependencies
-        working-directory: desktop/frontend
-        run: npm ci
-
-      - name: Install Electron dependencies
-        working-directory: desktop
-        run: npm ci
-
-      - name: Build & package
-        working-directory: desktop
-        run: npx electron-builder --mac --x64 --publish=never
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload macOS x64 artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: macos-installer-x64
-          path: desktop/release/*.dmg
+  # TODO: macOS builds temporarily disabled — code signing issues
+  # Re-enable build-macos-arm64 and build-macos-x64 jobs when fixed
 
   release:
     name: Create GitHub Release
-    needs: [build-windows, build-macos-arm64, build-macos-x64]
+    needs: [build-windows]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -288,6 +178,5 @@ jobs:
           prerelease: false
           files: |
             installers/*.exe
-            installers/*.dmg
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

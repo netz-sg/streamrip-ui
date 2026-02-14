@@ -1,6 +1,6 @@
 {
   "name": "streamrip-ui",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "private": true,
   "description": "A modern desktop GUI for streamrip — download hi-res music from Qobuz, TIDAL, Deezer & SoundCloud",
   "author": "netz-sg",
