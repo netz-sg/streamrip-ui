@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.7] - 2026-02-14
+
+### Other
+- Added x64 dmg
+
+
 ## [1.0.6] - 2026-02-14
 
 ### Features
