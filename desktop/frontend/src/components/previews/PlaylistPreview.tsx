@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Download,
-  Disc3,
   ListMusic,
   Clock,
   Hash,
@@ -12,12 +11,11 @@ import {
   RotateCcw,
   FolderOpen,
   Bookmark,
-  Sparkles,
 } from 'lucide-react';
 import { useMetadataStore } from '../../stores/metadataStore';
 import { useDownloadStore } from '../../stores/downloadStore';
 import { useWishlistStore } from '../../stores/wishlistStore';
-import type { TrackItem, MusicSource, DownloadStatus } from '../../api/types';
+import type { TrackItem, MusicSource } from '../../api/types';
 import { SOURCE_COLORS, SOURCE_LABELS } from '../../api/types';
 
 function formatDuration(seconds: number | null | undefined): string {

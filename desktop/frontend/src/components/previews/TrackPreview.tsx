@@ -16,7 +16,7 @@ import {
 import { useMetadataStore } from '../../stores/metadataStore';
 import { useDownloadStore } from '../../stores/downloadStore';
 import { useWishlistStore } from '../../stores/wishlistStore';
-import type { TrackMetadata, MusicSource, DownloadStatus } from '../../api/types';
+import type { MusicSource } from '../../api/types';
 import { SOURCE_COLORS, SOURCE_LABELS } from '../../api/types';
 
 function formatDuration(seconds: number | null | undefined): string {

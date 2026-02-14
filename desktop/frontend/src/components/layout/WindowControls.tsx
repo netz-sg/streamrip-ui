@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Minus, Square, X, Copy } from 'lucide-react';
+import { Minus, X, Copy } from 'lucide-react';
 
 // Access electron API if available (running in Electron)
 const electron = (window as unknown as { electron?: {

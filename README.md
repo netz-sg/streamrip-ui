@@ -1,4 +1,4 @@
-<p align="center">
+﻿<p align="center">
   <img src="desktop/frontend/public/logo.png" alt="streamrip-ui" width="128" height="128" />
 </p>
 
@@ -128,22 +128,36 @@ npm run dist:mac      # macOS .dmg
 
 ```
 streamrip-ui/
-â”œâ”€â”€ desktop/
-â”‚   â”œâ”€â”€ electron/          # Electron main process (window, IPC)
-â”‚   â”œâ”€â”€ frontend/          # React + TypeScript + Tailwind
-â”‚   â”‚   â”œâ”€â”€ src/
-â”‚   â”‚   â”‚   â”œâ”€â”€ components/    # Layout & preview components
-â”‚   â”‚   â”‚   â”œâ”€â”€ pages/         # Home, Downloads, Search, Settings, History, Wishlist
-â”‚   â”‚   â”‚   â”œâ”€â”€ stores/        # Zustand state management
-â”‚   â”‚   â”‚   â”œâ”€â”€ api/           # HTTP & WebSocket client
-â”‚   â”‚   â”‚   â””â”€â”€ hooks/         # Keyboard shortcuts, etc.
-â”‚   â”‚   â””â”€â”€ public/            # Static assets & logo
-â”‚   â”œâ”€â”€ backend/           # Python FastAPI server
-â”‚   â”‚   â”œâ”€â”€ api/               # REST endpoints & WebSocket
-â”‚   â”‚   â””â”€â”€ core/              # streamrip wrapper, download manager, compat checks
-â”‚   â””â”€â”€ tests/             # Compatibility tests
-â”œâ”€â”€ repo/                  # streamrip library (git submodule or checkout)
-â””â”€â”€ .github/workflows/     # CI: compat checks, releases
+├── desktop/
+│   ├── electron/              # Electron main process
+│   │   ├── main.js                # Window creation, backend spawn
+│   │   └── preload.js             # Context bridge
+│   ├── frontend/              # React + TypeScript + Tailwind
+│   │   ├── public/                # Static assets & logo
+│   │   └── src/
+│   │       ├── api/               # HTTP & WebSocket clients
+│   │       ├── components/
+│   │       │   ├── layout/        # AppShell, Sidebar, TitleBar
+│   │       │   └── previews/      # Album, Track, Artist, Playlist views
+│   │       ├── hooks/             # useKeyboardShortcuts, etc.
+│   │       ├── pages/             # Home, Downloads, Search, Settings, History, Wishlist
+│   │       ├── stores/            # Zustand state management
+│   │       └── styles/            # Global CSS
+│   ├── backend/               # Python FastAPI server
+│   │   ├── main.py                # App entry, health endpoint
+│   │   ├── api/
+│   │   │   ├── endpoints/         # REST routes (config, download, search, url, wishlist)
+│   │   │   ├── schemas/           # Pydantic request/response models
+│   │   │   └── websocket.py       # WebSocket for real-time progress
+│   │   └── core/
+│   │       ├── compat_check.py    # Startup compatibility validation
+│   │       ├── download_manager.py
+│   │       ├── progress_hook.py   # Real-time progress tracking
+│   │       ├── streamrip_wrapper.py  # Hardened adapter layer
+│   │       └── wishlist.py
+│   └── tests/                 # Compatibility tests
+├── repo/                      # streamrip library (git submodule)
+└── .github/workflows/         # CI: compat checks, release builds
 ```
 
 ## Releasing

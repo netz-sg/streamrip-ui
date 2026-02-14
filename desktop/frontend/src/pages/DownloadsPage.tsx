@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Download,
   X,
   CheckCircle2,
   AlertCircle,

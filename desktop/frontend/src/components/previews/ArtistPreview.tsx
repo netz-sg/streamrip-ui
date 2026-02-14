@@ -10,18 +10,16 @@ import {
 import { useMetadataStore } from '../../stores/metadataStore';
 import { useDownloadStore } from '../../stores/downloadStore';
 import { useWishlistStore } from '../../stores/wishlistStore';
-import type { ArtistAlbumItem, MusicSource, CoverUrls } from '../../api/types';
+import type { ArtistAlbumItem, MusicSource } from '../../api/types';
 import { SOURCE_COLORS, SOURCE_LABELS } from '../../api/types';
 
 function AlbumCard({
   album,
   index,
-  source,
   onSelect,
 }: {
   album: ArtistAlbumItem;
   index: number;
-  source: string;
   onSelect: (album: ArtistAlbumItem) => void;
 }) {
   const coverSrc = album.covers.large || album.covers.original || album.covers.small || album.covers.thumbnail;
@@ -185,7 +183,6 @@ export default function ArtistPreview() {
                   key={album.id}
                   album={album}
                   index={i}
-                  source={source || ''}
                   onSelect={handleSelectAlbum}
                 />
               ))}

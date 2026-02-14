@@ -23,7 +23,7 @@ import { useMetadataStore } from '../stores/metadataStore';
 import { useDownloadStore } from '../stores/downloadStore';
 import { useWishlistStore } from '../stores/wishlistStore';
 import { fetchBulkMetadata } from '../api/client';
-import type { AlbumMetadata, TrackItem, MusicSource, DownloadStatus, BulkMetadataItem, MetadataResponse, CoverUrls } from '../api/types';
+import type { AlbumMetadata, TrackItem, MusicSource, DownloadStatus, MetadataResponse } from '../api/types';
 import { SOURCE_COLORS, SOURCE_LABELS } from '../api/types';
 import TrackPreview from '../components/previews/TrackPreview';
 import ArtistPreview from '../components/previews/ArtistPreview';

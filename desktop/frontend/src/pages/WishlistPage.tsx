@@ -5,7 +5,6 @@ import {
   Disc3,
   Download,
   Trash2,
-  Inbox,
   Clock,
 } from 'lucide-react';
 import { useWishlistStore } from '../stores/wishlistStore';
