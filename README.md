@@ -181,31 +181,6 @@ streamrip-ui/
 └── .github/workflows/         # CI: compat checks, release builds
 ```
 
-## Releasing
-
-Releases are managed via an interactive CLI — no arguments needed:
-
-```bash
-cd desktop
-npm run release
-```
-
-The CLI guides you step-by-step:
-
-1. **Version type** — choose `patch`, `minor`, `major`, or enter a custom version
-2. **Changes** — add entries one by one as Feature, Bug Fix, or Other
-3. **Summary** — review everything in a formatted overview
-4. **Confirm** — nothing is pushed until you say yes
-
-### What the script does
-
-1. Updates `package.json` versions (desktop + frontend)
-2. Writes a categorized `CHANGELOG.md` entry with date
-3. Commits all staged changes
-4. Creates an annotated git tag (`vX.Y.Z`)
-5. Pushes commit + tag to `origin/main`
-6. CI builds Windows `.exe` and macOS `.dmg` installers automatically
-
 ## Credits
 
 - **[streamrip](https://github.com/nathom/streamrip)** by [@nathom](https://github.com/nathom) — the core engine that powers this application
