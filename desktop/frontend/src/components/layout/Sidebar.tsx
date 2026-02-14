@@ -49,7 +49,7 @@ export default function Sidebar() {
       {/* Brand */}
       <div className="px-5 pt-6 pb-5 flex items-center gap-3">
         <img
-          src="/logo.png"
+          src={`${import.meta.env.BASE_URL}logo.png`}
           alt="streamrip-ui"
           className="w-9 h-9 rounded-xl object-contain"
           draggable={false}

@@ -18,21 +18,19 @@ function startBackend() {
     const backendDir = isDev
       ? path.join(__dirname, '..', 'backend')
       : path.join(process.resourcesPath, 'backend');
-    const backendPath = isDev
-      ? path.join(backendDir, 'main.py')
-      : path.join(backendDir, 'streamrip-backend');
+    const backendPath = path.join(backendDir, 'main.py');
 
-    const args = isDev
-      ? [backendPath, '--port', String(backendPort)]
-      : ['--port', String(backendPort)];
-    const cmd = isDev ? pythonCmd : backendPath;
+    const args = [backendPath, '--port', String(backendPort)];
+    const cmd = pythonCmd;
 
     console.log(`[Streamrip] Starting backend: ${cmd} ${args.join(' ')}`);
+    console.log(`[Streamrip] Backend dir: ${backendDir}`);
 
     backendProcess = spawn(cmd, args, {
       cwd: backendDir,
       stdio: ['pipe', 'pipe', 'pipe'],
       env: { ...process.env },
+      shell: process.platform === 'win32',
     });
 
     backendProcess.stdout.on('data', (data) => {
@@ -155,7 +153,9 @@ function stopAll() {
 // ─── Window ───────────────────────────────────────────────────
 
 async function createWindow() {
-  const iconPath = path.join(__dirname, '..', 'frontend', 'public', 'logo.png');
+  const iconPath = isDev
+    ? path.join(__dirname, '..', 'frontend', 'public', 'logo.png')
+    : path.join(process.resourcesPath, 'logo.png');
 
   mainWindow = new BrowserWindow({
     width: 1280,
@@ -231,8 +231,24 @@ app.whenReady().then(async () => {
   try {
     await startBackend();
     console.log(`[Streamrip] Backend ready on port ${backendPort}`);
+
+    // Wait until backend HTTP server is actually accepting connections
+    const backendReady = await waitForUrl(`http://127.0.0.1:${backendPort}/health`, 30);
+    if (backendReady) {
+      console.log('[Streamrip] Backend health check passed');
+    } else {
+      console.warn('[Streamrip] Backend health check timed out — continuing anyway');
+    }
   } catch (err) {
     console.error('[Streamrip] Backend failed:', err.message);
+    dialog.showErrorBox(
+      'Backend Error',
+      `Could not start the Python backend.\n\n` +
+      `Make sure Python 3.10+ is installed and in your PATH,\n` +
+      `and that streamrip + dependencies are installed:\n` +
+      `  pip install streamrip fastapi uvicorn\n\n` +
+      `Error: ${err.message}`
+    );
   }
 
   // 2) In dev mode, start Vite dev server automatically

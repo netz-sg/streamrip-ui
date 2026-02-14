@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.4] - 2026-02-14
+
+### Bug Fixes
+- Logo was not showing up on the UI
+
+
 ## [1.0.3] - 2026-02-14
 
 ### Bug Fixes

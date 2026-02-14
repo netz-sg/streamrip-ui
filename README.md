@@ -6,7 +6,7 @@
 
 <p align="center">
   <strong>A modern desktop GUI for <a href="https://github.com/nathom/streamrip">streamrip</a></strong><br />
-  Download high-quality music from Qobuz, TIDAL, Deezer &amp; SoundCloud — without the terminal.
+  A polished interface for managing your media library — no terminal required.
 </p>
 
 <p align="center">
@@ -20,22 +20,22 @@
 
 ## What is this?
 
-**streamrip-ui** is an Electron-based desktop application that wraps [nathom's streamrip](https://github.com/nathom/streamrip) library in a polished, dark-themed interface. It provides everything the CLI does — album/track/artist/playlist downloads, search, quality selection, metadata tagging — but with a visual experience designed for daily use.
+**streamrip-ui** is an Electron-based desktop application that wraps [nathom's streamrip](https://github.com/nathom/streamrip) library in a polished, dark-themed interface. It provides a visual experience designed for daily use, replacing the CLI workflow entirely.
 
 > **Note:** This project does not bundle or redistribute streamrip. It depends on a local checkout of the [streamrip](https://github.com/nathom/streamrip) repository as its backend engine.
 
 ## Features
 
-- **Paste & Download** — Drop a Qobuz, TIDAL, Deezer, or SoundCloud URL and download in one click
-- **Real-Time Progress** — Per-track progress bars with speed and ETA, powered by a custom progress hook
+- **Paste & Go** — Drop a URL and get a full preview in one click
+- **Real-Time Progress** — Per-item progress bars with speed and ETA via a custom progress hook
 - **Rich Previews** — Album, track, artist, and playlist views with cover art, tracklists, and quality badges
-- **Multi-Source Search** — Search across all four platforms with instant results
-- **Download Queue** — Concurrent downloads with queue management, history, and wishlist
+- **Multi-Source Search** — Search across supported platforms with instant results
+- **Queue Management** — Concurrent processing with queue, history, and wishlist
 - **Full Configuration** — Every streamrip setting exposed: quality, filepaths, filters, metadata, conversion, database
 - **Keyboard Shortcuts** — `Ctrl+1—6` navigation, `Ctrl+F` search focus, `Escape` to dismiss
 - **Drag & Drop** — Drop URLs directly onto the window to start previewing
 - **Backend Health Monitoring** — Live status indicator with auto-reconnect
-- **Toast Notifications** — Download started, completed, failed — always in the loop
+- **Toast Notifications** — Status updates for every action — always in the loop
 
 ## Tech Stack
 
@@ -106,9 +106,9 @@ npm run dist:mac      # macOS .dmg
 ## Usage
 
 1. **Launch** the app — the Python backend starts automatically
-2. **Paste** a music URL into the input bar on the Home page
-3. **Preview** the album, track, artist, or playlist with full metadata
-4. **Download** with one click — monitor progress in the Downloads tab
+2. **Paste** a URL into the input bar on the Home page
+3. **Preview** the content with full metadata
+4. **Process** with one click — monitor progress in the queue
 5. **Configure** quality, output paths, filters, and more in Settings
 
 ### Keyboard Shortcuts
@@ -187,7 +187,7 @@ The CLI guides you step-by-step:
 
 ## Credits
 
-- **[streamrip](https://github.com/nathom/streamrip)** by [@nathom](https://github.com/nathom) — the core music downloading engine that powers this application
+- **[streamrip](https://github.com/nathom/streamrip)** by [@nathom](https://github.com/nathom) — the core engine that powers this application
 - Built with [Electron](https://www.electronjs.org/), [React](https://react.dev/), [FastAPI](https://fastapi.tiangolo.com/), and [Tailwind CSS](https://tailwindcss.com/)
 
 ## License
@@ -196,4 +196,4 @@ This project is licensed under the [GNU General Public License v3.0](LICENSE) �
 
 ## Disclaimer
 
-This application is provided for personal use only. Please respect the terms of service of the music platforms you use and support artists by purchasing their music. The developers are not responsible for any misuse of this software.
+This application is provided for personal use only. The developers are not responsible for any misuse of this software.
