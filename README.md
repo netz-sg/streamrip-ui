@@ -162,30 +162,40 @@ streamrip-ui/
 
 ## Releasing
 
-Releases are triggered by pushing a **version tag** (e.g. `v1.0.0`).
-
-### Publish a Release
+Releases are managed via a single npm command that handles everything:
 
 ```bash
-# Tag the current commit
-git tag v1.0.0
-
-# Push the tag - CI builds installers and creates a GitHub Release
-git push origin v1.0.0
+cd desktop
+npm run release -- <version> "<description>"
 ```
 
-The CI pipeline will:
-1. Build Windows `.exe` installer (NSIS) and macOS `.dmg`
-2. Generate a changelog from commits since the last tag
-3. Create a GitHub Release with attached installers
+### Version
 
-### Version Bump Examples
+| Argument | Effect | Example |
+|----------|--------|---------|
+| `patch` | Auto-bump patch (1.0.0 → 1.0.1) | `npm run release -- patch "fix: progress bar"` |
+| `minor` | Auto-bump minor (1.0.0 → 1.1.0) | `npm run release -- minor "feat: drag & drop"` |
+| `major` | Auto-bump major (1.0.0 → 2.0.0) | `npm run release -- major "feat!: new API"` |
+| `X.Y.Z` | Explicit version | `npm run release -- 2.1.0 "feat: search"` |
+
+### Description Format
+
+Prefix entries with `feat:` or `fix:` to auto-categorize them in the changelog. Separate multiple entries with commas:
 
 ```bash
-git tag v1.0.1   # Patch release
-git tag v1.1.0   # Minor release
-git tag v2.0.0   # Major release
+npm run release -- patch "fix: progress bar, fix: sidebar badge count"
+npm run release -- minor "feat: multi-source search, fix: UI glitch, chore: deps update"
 ```
+
+### What the script does
+
+1. Updates `package.json` versions (desktop + frontend)
+2. Writes a `CHANGELOG.md` entry with date and categorized changes
+3. Commits all staged changes
+4. Creates an annotated git tag (`vX.Y.Z`)
+5. Pushes commit + tag to `origin/main`
+6. CI builds Windows `.exe` and macOS `.dmg` installers automatically
+
 ## Credits
 
 - **[streamrip](https://github.com/nathom/streamrip)** by [@nathom](https://github.com/nathom) â€” the core music downloading engine that powers this application

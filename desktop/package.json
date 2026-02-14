@@ -1,15 +1,21 @@
 {
   "name": "streamrip-ui",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "private": true,
   "description": "A modern desktop GUI for streamrip — download hi-res music from Qobuz, TIDAL, Deezer & SoundCloud",
+  "author": "netz-sg",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/netz-sg/streamrip-ui.git"
+  },
   "main": "electron/main.js",
   "scripts": {
     "start": "electron .",
     "build": "cd frontend && npm run build",
-    "dist": "npm run build && electron-builder",
-    "dist:win": "npm run build && electron-builder --win",
-    "dist:mac": "npm run build && electron-builder --mac"
+    "dist": "npm run build && electron-builder --publish=never",
+    "dist:win": "npm run build && electron-builder --win --publish=never",
+    "dist:mac": "npm run build && electron-builder --mac --publish=never",
+    "release": "node ../scripts/release.js"
   },
   "build": {
     "appId": "com.streamrip.ui",
@@ -25,15 +31,22 @@
       {
         "from": "backend/",
         "to": "backend/",
-        "filter": ["**/*", "!__pycache__/**"]
+        "filter": [
+          "**/*",
+          "!__pycache__/**"
+        ]
       }
     ],
     "win": {
-      "target": ["nsis"],
+      "target": [
+        "nsis"
+      ],
       "icon": "frontend/public/logo.png"
     },
     "mac": {
-      "target": ["dmg"],
+      "target": [
+        "dmg"
+      ],
       "icon": "frontend/public/logo.png",
       "category": "public.app-category.music"
     },
