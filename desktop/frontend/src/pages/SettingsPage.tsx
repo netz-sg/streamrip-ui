@@ -13,12 +13,14 @@ import {
   Filter,
   Tags,
   Database,
+  Info,
+  ExternalLink,
 } from 'lucide-react';
 import { useConfigStore } from '../stores/configStore';
 import type { MusicSource } from '../api/types';
 import { SOURCE_COLORS, SOURCE_LABELS } from '../api/types';
 
-type Tab = 'sources' | 'downloads' | 'quality' | 'artwork' | 'filepaths' | 'filters' | 'metadata' | 'database';
+type Tab = 'sources' | 'downloads' | 'quality' | 'artwork' | 'filepaths' | 'filters' | 'metadata' | 'database' | 'about';
 
 const tabs: { id: Tab; label: string; icon: typeof Key }[] = [
   { id: 'sources', label: 'Sources', icon: Key },
@@ -29,6 +31,7 @@ const tabs: { id: Tab; label: string; icon: typeof Key }[] = [
   { id: 'filters', label: 'Filters', icon: Filter },
   { id: 'metadata', label: 'Metadata', icon: Tags },
   { id: 'database', label: 'Database', icon: Database },
+  { id: 'about', label: 'About', icon: Info },
 ];
 
 function InputField({
@@ -458,6 +461,126 @@ export default function SettingsPage() {
                   <div className="space-y-3">
                     <ToggleField label="Track Downloads" description="Skip previously downloaded tracks (recommended)" value={localConfig.database?.downloads_enabled ?? true} onChange={(v) => updateLocal('database', 'downloads_enabled', v)} />
                     <ToggleField label="Track Failed Downloads" description="Remember failed items for retry with 'rip repair'" value={localConfig.database?.failed_downloads_enabled ?? true} onChange={(v) => updateLocal('database', 'failed_downloads_enabled', v)} />
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'about' && (
+                <div className="space-y-6">
+                  {/* App Info */}
+                  <div className="glass rounded-2xl p-6">
+                    <div className="flex items-start gap-5">
+                      <img
+                        src={`${import.meta.env.BASE_URL}logo.png`}
+                        alt="streamrip-ui"
+                        className="w-16 h-16 rounded-2xl object-contain"
+                        draggable={false}
+                      />
+                      <div>
+                        <div className="flex items-center gap-2.5">
+                          <h2 className="font-display text-xl font-bold text-text-primary">streamrip-ui</h2>
+                          <span className="px-2 py-0.5 rounded-md bg-accent-primary/15 border border-accent-primary/30 text-[10px] font-bold uppercase tracking-widest text-accent-hover">
+                            Beta
+                          </span>
+                        </div>
+                        <p className="text-[13px] text-text-muted mt-1">A modern desktop GUI for streamrip</p>
+                        <div className="flex items-center gap-4 mt-3">
+                          <span className="text-[12px] text-text-secondary font-medium">
+                            Version <span className="text-accent-hover font-semibold">1.0.4</span>
+                          </span>
+                          <span className="text-border-default">&middot;</span>
+                          <span className="text-[12px] text-text-muted">Electron + React + FastAPI</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Credits */}
+                  <div className="glass rounded-2xl p-6">
+                    <h3 className="text-[14px] font-semibold text-text-primary mb-4">Credits</h3>
+                    <div className="space-y-4">
+                      {/* streamrip core */}
+                      <div className="flex items-start gap-4 p-4 rounded-xl bg-bg-surface/50 border border-border-subtle">
+                        <div className="w-10 h-10 rounded-xl bg-accent-primary/10 border border-accent-primary/20 flex items-center justify-center shrink-0">
+                          <span className="text-[16px]">🎵</span>
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between">
+                            <h4 className="text-[13px] font-semibold text-text-primary">streamrip</h4>
+                            <a
+                              href="https://github.com/nathom/streamrip"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-1 text-[11px] text-accent-hover hover:text-accent-primary transition-colors"
+                            >
+                              GitHub <ExternalLink size={10} />
+                            </a>
+                          </div>
+                          <p className="text-[12px] text-text-muted mt-0.5">
+                            The core engine powering this application
+                          </p>
+                          <p className="text-[11px] text-text-muted/70 mt-1">
+                            Developed by <span className="text-text-secondary font-medium">@nathom</span>
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* streamrip-ui */}
+                      <div className="flex items-start gap-4 p-4 rounded-xl bg-bg-surface/50 border border-border-subtle">
+                        <div className="w-10 h-10 rounded-xl bg-accent-secondary/10 border border-accent-secondary/20 flex items-center justify-center shrink-0">
+                          <span className="text-[16px]">🖥️</span>
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between">
+                            <h4 className="text-[13px] font-semibold text-text-primary">streamrip-ui</h4>
+                            <a
+                              href="https://github.com/netz-sg/streamrip-ui"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-1 text-[11px] text-accent-hover hover:text-accent-primary transition-colors"
+                            >
+                              GitHub <ExternalLink size={10} />
+                            </a>
+                          </div>
+                          <p className="text-[12px] text-text-muted mt-0.5">
+                            Desktop GUI &amp; backend integration
+                          </p>
+                          <p className="text-[11px] text-text-muted/70 mt-1">
+                            Developed by <span className="text-text-secondary font-medium">@netz-sg</span>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Tech Stack */}
+                  <div className="glass rounded-2xl p-6">
+                    <h3 className="text-[14px] font-semibold text-text-primary mb-4">Tech Stack</h3>
+                    <div className="grid grid-cols-2 gap-3">
+                      {[
+                        { name: 'Electron', desc: 'Desktop shell' },
+                        { name: 'React 19', desc: 'UI framework' },
+                        { name: 'TypeScript', desc: 'Type safety' },
+                        { name: 'Tailwind CSS v4', desc: 'Styling' },
+                        { name: 'FastAPI', desc: 'Backend API' },
+                        { name: 'Zustand', desc: 'State management' },
+                        { name: 'Framer Motion', desc: 'Animations' },
+                        { name: 'SQLite', desc: 'Local database' },
+                      ].map((tech) => (
+                        <div key={tech.name} className="p-3 rounded-xl bg-bg-surface/40 border border-border-subtle">
+                          <p className="text-[12px] font-medium text-text-primary">{tech.name}</p>
+                          <p className="text-[10px] text-text-muted mt-0.5">{tech.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* License */}
+                  <div className="glass rounded-2xl p-6">
+                    <h3 className="text-[14px] font-semibold text-text-primary mb-2">License</h3>
+                    <p className="text-[12px] text-text-muted">
+                      This project is licensed under the <span className="text-text-secondary font-medium">GNU General Public License v3.0</span> — the same license as streamrip.
+                    </p>
                   </div>
                 </div>
               )}

@@ -48,14 +48,35 @@
 
 ## Screenshots
 
-> _Screenshots will be added after the first public release._
-
-<!--
 <p align="center">
-  <img src="docs/screenshots/home.png" width="800" alt="Home — Album Preview" />
-  <br /><em>Album preview with tracklist and quality info</em>
+  <img src="screenshots/Search%20by%20URL%20.png" width="800" alt="Search by URL" />
+  <br /><em>Paste a URL to instantly preview content with full metadata</em>
 </p>
--->
+
+<p align="center">
+  <img src="screenshots/search%20function.png" width="800" alt="Search Function" />
+  <br /><em>Search across multiple platforms with instant results</em>
+</p>
+
+<p align="center">
+  <img src="screenshots/download%20section.png" width="800" alt="Download Section" />
+  <br /><em>Real-time progress tracking with speed and ETA</em>
+</p>
+
+<p align="center">
+  <img src="screenshots/download%20history.png" width="800" alt="Download History" />
+  <br /><em>Complete history of all processed items</em>
+</p>
+
+<p align="center">
+  <img src="screenshots/saved%20music.png" width="800" alt="Saved / Wishlist" />
+  <br /><em>Save items to your wishlist for later</em>
+</p>
+
+<p align="center">
+  <img src="screenshots/settings.png" width="800" alt="Settings" />
+  <br /><em>Full configuration — sources, quality, filepaths, and more</em>
+</p>
 
 ## Installation
 

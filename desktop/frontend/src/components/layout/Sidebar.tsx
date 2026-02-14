@@ -55,9 +55,14 @@ export default function Sidebar() {
           draggable={false}
         />
         <div>
-          <h1 className="font-display text-[15px] font-semibold tracking-tight text-text-primary">
-            streamrip
-          </h1>
+          <div className="flex items-center gap-2">
+            <h1 className="font-display text-[15px] font-semibold tracking-tight text-text-primary">
+              streamrip
+            </h1>
+            <span className="px-1.5 py-0.5 rounded-md bg-accent-primary/15 border border-accent-primary/30 text-[9px] font-bold uppercase tracking-widest text-accent-hover">
+              Beta
+            </span>
+          </div>
           <p className="text-[10px] text-text-muted tracking-widest uppercase font-medium">
             ui
           </p>
@@ -146,7 +151,7 @@ export default function Sidebar() {
               {healthy === null ? 'Connecting…' : healthy ? 'Backend' : 'Offline'}
             </span>
           </div>
-          <p className="text-[10px] text-text-muted/60">v1.0.0 &middot; streamrip 2.2</p>
+          <p className="text-[10px] text-text-muted/60">v1.0.4 &middot; Beta</p>
         </div>
       </div>
     </aside>

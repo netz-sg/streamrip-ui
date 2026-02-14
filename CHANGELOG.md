@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.5] - 2026-02-14
+
+### Bug Fixes
+- Logo is now showing up inside the app
+
+### Other
+- Added a Beta Badge in die UI
+
+
 ## [1.0.4] - 2026-02-14
 
 ### Bug Fixes
