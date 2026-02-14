@@ -15,8 +15,10 @@ import {
   Database,
   Info,
   ExternalLink,
+  RotateCcw,
 } from 'lucide-react';
 import { useConfigStore } from '../stores/configStore';
+import { useOnboardingStore } from '../stores/onboardingStore';
 import type { MusicSource } from '../api/types';
 import { SOURCE_COLORS, SOURCE_LABELS } from '../api/types';
 
@@ -146,6 +148,7 @@ function ToggleField({
 
 export default function SettingsPage() {
   const { config, loading, saving, loadConfig, saveConfig } = useConfigStore();
+  const resetOnboarding = useOnboardingStore((s) => s.resetOnboarding);
   const [activeTab, setActiveTab] = useState<Tab>('sources');
   const [localConfig, setLocalConfig] = useState(config);
 
@@ -581,6 +584,21 @@ export default function SettingsPage() {
                     <p className="text-[12px] text-text-muted">
                       This project is licensed under the <span className="text-text-secondary font-medium">GNU General Public License v3.0</span> — the same license as streamrip.
                     </p>
+                  </div>
+
+                  {/* Restart Onboarding */}
+                  <div className="glass rounded-2xl p-6">
+                    <h3 className="text-[14px] font-semibold text-text-primary mb-2">Onboarding</h3>
+                    <p className="text-[12px] text-text-muted mb-4">
+                      Run the initial setup guide again to learn about all features or reconfigure your services.
+                    </p>
+                    <button
+                      onClick={resetOnboarding}
+                      className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-accent-primary/10 text-accent-primary text-[12px] font-semibold hover:bg-accent-primary/20 border border-accent-primary/20 transition-colors"
+                    >
+                      <RotateCcw size={14} />
+                      Restart Onboarding
+                    </button>
                   </div>
                 </div>
               )}

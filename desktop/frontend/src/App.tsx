@@ -7,8 +7,12 @@ import SearchPage from './pages/SearchPage';
 import SettingsPage from './pages/SettingsPage';
 import HistoryPage from './pages/HistoryPage';
 import WishlistPage from './pages/WishlistPage';
+import OnboardingFlow from './components/onboarding/OnboardingFlow';
+import { useOnboardingStore } from './stores/onboardingStore';
 
 export default function App() {
+  const onboardingCompleted = useOnboardingStore((s) => s.completed);
+
   return (
     <HashRouter>
       <Toaster
@@ -28,16 +32,20 @@ export default function App() {
         }}
         theme="dark"
       />
-      <Routes>
-        <Route element={<AppShell />}>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/downloads" element={<DownloadsPage />} />
-          <Route path="/search" element={<SearchPage />} />
-          <Route path="/settings" element={<SettingsPage />} />
-          <Route path="/history" element={<HistoryPage />} />
-          <Route path="/wishlist" element={<WishlistPage />} />
-        </Route>
-      </Routes>
+      {!onboardingCompleted ? (
+        <OnboardingFlow />
+      ) : (
+        <Routes>
+          <Route element={<AppShell />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/downloads" element={<DownloadsPage />} />
+            <Route path="/search" element={<SearchPage />} />
+            <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/history" element={<HistoryPage />} />
+            <Route path="/wishlist" element={<WishlistPage />} />
+          </Route>
+        </Routes>
+      )}
     </HashRouter>
   );
 }

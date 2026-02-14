@@ -143,41 +143,84 @@ jobs:
       - name: Generate changelog
         id: changelog
         run: |
-          PREV_TAG=$(git tag --sort=-version:refname | head -2 | tail -1 || echo "")
-          if [ -z "$PREV_TAG" ] || [ "$PREV_TAG" = "$GITHUB_REF_NAME" ]; then
-            COMMITS=$(git log --pretty=format:"- %s (%h)" HEAD)
-          else
-            COMMITS=$(git log --pretty=format:"- %s (%h)" ${PREV_TAG}..HEAD)
+          VERSION="${GITHUB_REF_NAME#v}"
+
+          # Extract the section for this version from CHANGELOG.md
+          if [ -f "CHANGELOG.md" ]; then
+            # Get text between this version header and the next version header (or end)
+            SECTION=$(awk -v ver="$VERSION" '
+              /^## \[/ {
+                if (found) exit
+                if (index($0, "[" ver "]")) { found=1; next }
+              }
+              found { print }
+            ' CHANGELOG.md)
           fi
 
-          FEATURES=$(echo "$COMMITS" | grep -i "^- feat" || echo "")
-          FIXES=$(echo "$COMMITS" | grep -i "^- fix" || echo "")
-          OTHER=$(echo "$COMMITS" | grep -iv "^- feat\|^- fix" || echo "")
+          if [ -n "$SECTION" ]; then
+            {
+              echo "CHANGELOG<<EOF"
+              echo "## What's Changed"
+              echo ""
+              echo "$SECTION"
+              echo "---"
+              echo ""
+              echo "**Full Changelog**: https://github.com/${{ github.repository }}/commits/${{ github.ref_name }}"
+              echo "EOF"
+            } >> $GITHUB_OUTPUT
+          else
+            # Fallback: generate from git log if CHANGELOG.md has no entry
+            PREV_TAG=$(git tag --sort=-version:refname | head -2 | tail -1 || echo "")
+            if [ -z "$PREV_TAG" ] || [ "$PREV_TAG" = "$GITHUB_REF_NAME" ]; then
+              COMMITS=$(git log --pretty=format:"%s" HEAD)
+            else
+              COMMITS=$(git log --pretty=format:"%s" ${PREV_TAG}..HEAD)
+            fi
 
-          {
-            echo "CHANGELOG<<EOF"
-            echo "## What's Changed"
-            echo ""
-            if [ -n "$FEATURES" ]; then
-              echo "### Features"
-              echo "$FEATURES"
+            # Split commit messages that contain multiple entries (comma-separated feat:/fix:)
+            PARSED=""
+            while IFS= read -r line; do
+              # Remove "release: vX.Y.Z — " prefix if present
+              clean=$(echo "$line" | sed 's/^release: v[0-9.]*[[:space:]]*[—–-][[:space:]]*//')
+              # Split on ", " and process each part
+              echo "$clean" | tr ',' '\n' | while IFS= read -r part; do
+                trimmed=$(echo "$part" | sed 's/^[[:space:]]*//')
+                if [ -n "$trimmed" ]; then
+                  echo "- $trimmed"
+                fi
+              done
+            done <<< "$COMMITS" > /tmp/parsed_commits.txt
+            PARSED=$(cat /tmp/parsed_commits.txt)
+
+            FEATURES=$(echo "$PARSED" | grep -i "^- feat" || echo "")
+            FIXES=$(echo "$PARSED" | grep -i "^- fix" || echo "")
+            OTHER=$(echo "$PARSED" | grep -iv "^- feat\|^- fix" || echo "")
+
+            {
+              echo "CHANGELOG<<EOF"
+              echo "## What's Changed"
               echo ""
-            fi
-            if [ -n "$FIXES" ]; then
-              echo "### Bug Fixes"
-              echo "$FIXES"
+              if [ -n "$FEATURES" ]; then
+                echo "### Features"
+                echo "$FEATURES"
+                echo ""
+              fi
+              if [ -n "$FIXES" ]; then
+                echo "### Bug Fixes"
+                echo "$FIXES"
+                echo ""
+              fi
+              if [ -n "$OTHER" ]; then
+                echo "### Other"
+                echo "$OTHER"
+                echo ""
+              fi
+              echo "---"
               echo ""
-            fi
-            if [ -n "$OTHER" ]; then
-              echo "### Other"
-              echo "$OTHER"
-              echo ""
-            fi
-            echo "---"
-            echo ""
-            echo "**Full Changelog**: https://github.com/${{ github.repository }}/commits/${{ github.ref_name }}"
-            echo "EOF"
-          } >> $GITHUB_OUTPUT
+              echo "**Full Changelog**: https://github.com/${{ github.repository }}/commits/${{ github.ref_name }}"
+              echo "EOF"
+            } >> $GITHUB_OUTPUT
+          fi
 
       - name: Create Release
         uses: softprops/action-gh-release@v2

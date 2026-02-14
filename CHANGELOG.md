@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.0.6] - 2026-02-14
+
+### Features
+- Added a Onboardingscreen
+- Setup your Account after Onboarding
+
+### Bug Fixes
+- Performance fixes
+
+
 ## [1.0.5] - 2026-02-14
 
 ### Bug Fixes
