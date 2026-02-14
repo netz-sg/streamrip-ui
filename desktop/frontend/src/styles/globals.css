@@ -1,0 +1,183 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg-primary: #06060b;
+  --color-bg-secondary: #0e0e18;
+  --color-bg-surface: #141422;
+  --color-bg-elevated: #1a1a2e;
+  --color-bg-hover: #22223a;
+  --color-border-default: #2a2a3d;
+  --color-border-subtle: #1e1e32;
+  --color-accent-primary: #6366f1;
+  --color-accent-hover: #818cf8;
+  --color-accent-glow: #6366f140;
+  --color-accent-secondary: #8b5cf6;
+  --color-success: #10b981;
+  --color-error: #ef4444;
+  --color-warning: #f59e0b;
+  --color-text-primary: #f1f5f9;
+  --color-text-secondary: #94a3b8;
+  --color-text-muted: #64748b;
+  --font-display: 'Outfit', system-ui, sans-serif;
+  --font-sans: 'DM Sans', system-ui, sans-serif;
+}
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html, body, #root {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  body {
+    background-color: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-border-default);
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-text-muted);
+  }
+
+  ::selection {
+    background: var(--color-accent-primary);
+    color: white;
+  }
+
+  input, textarea, select {
+    outline: none;
+    font-family: inherit;
+  }
+}
+
+@layer components {
+  .glass {
+    background: linear-gradient(
+      135deg,
+      rgba(20, 20, 34, 0.7) 0%,
+      rgba(14, 14, 24, 0.5) 100%
+    );
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(42, 42, 61, 0.5);
+  }
+
+  .glass-strong {
+    background: linear-gradient(
+      135deg,
+      rgba(26, 26, 46, 0.85) 0%,
+      rgba(20, 20, 34, 0.75) 100%
+    );
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    border: 1px solid rgba(42, 42, 61, 0.6);
+  }
+
+  .glow-accent {
+    box-shadow:
+      0 0 20px rgba(99, 102, 241, 0.15),
+      0 0 60px rgba(99, 102, 241, 0.05);
+  }
+
+  .glow-cover {
+    box-shadow:
+      0 8px 40px rgba(0, 0, 0, 0.5),
+      0 0 80px var(--cover-glow, rgba(99, 102, 241, 0.1));
+  }
+
+  .text-gradient {
+    background: linear-gradient(135deg, #f1f5f9 0%, #94a3b8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-accent {
+    background: linear-gradient(135deg, #818cf8 0%, #6366f1 50%, #8b5cf6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      var(--color-bg-surface) 0%,
+      var(--color-bg-elevated) 50%,
+      var(--color-bg-surface) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+
+  .noise {
+    position: relative;
+  }
+  .noise::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 256px;
+    pointer-events: none;
+    border-radius: inherit;
+    z-index: 1;
+    mix-blend-mode: overlay;
+  }
+
+  .progress-glow {
+    position: relative;
+  }
+  .progress-glow::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    bottom: -2px;
+    width: 20px;
+    background: radial-gradient(circle, var(--color-accent-primary) 0%, transparent 70%);
+    filter: blur(4px);
+    opacity: 0.8;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}

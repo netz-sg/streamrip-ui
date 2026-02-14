@@ -1,0 +1,71 @@
+name: Desktop Backend Compatibility
+
+on:
+  push:
+    branches: [dev, main]
+    paths:
+      - 'repo/streamrip/**'
+      - 'desktop/backend/**'
+      - 'desktop/tests/**'
+  pull_request:
+    branches: [dev, main]
+    paths:
+      - 'repo/streamrip/**'
+      - 'desktop/backend/**'
+      - 'desktop/tests/**'
+
+jobs:
+  compat-check:
+    name: streamrip ↔ Desktop Backend Compatibility
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.10', '3.11', '3.12']
+
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout repository
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install streamrip dependencies
+        working-directory: repo
+        run: |
+          pip install --upgrade pip
+          pip install poetry
+          poetry install --no-interaction
+
+      - name: Install desktop backend dependencies
+        working-directory: desktop/backend
+        run: pip install -r requirements.txt
+
+      - name: Install test dependencies
+        run: pip install pytest
+
+      - name: Run compatibility tests
+        working-directory: desktop
+        run: python -m pytest tests/test_compat.py -v --tb=long
+
+  frontend-typecheck:
+    name: Frontend TypeScript Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout repository
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install frontend dependencies
+        working-directory: desktop/frontend
+        run: npm ci
+
+      - name: TypeScript type check
+        working-directory: desktop/frontend
+        run: npx tsc --noEmit

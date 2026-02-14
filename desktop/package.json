@@ -1,0 +1,51 @@
+{
+  "name": "streamrip-ui",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A modern desktop GUI for streamrip — download hi-res music from Qobuz, TIDAL, Deezer & SoundCloud",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "cd frontend && npm run build",
+    "dist": "npm run build && electron-builder",
+    "dist:win": "npm run build && electron-builder --win",
+    "dist:mac": "npm run build && electron-builder --mac"
+  },
+  "build": {
+    "appId": "com.streamrip.ui",
+    "productName": "streamrip-ui",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "electron/**/*",
+      "frontend/dist/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "backend/",
+        "to": "backend/",
+        "filter": ["**/*", "!__pycache__/**"]
+      }
+    ],
+    "win": {
+      "target": ["nsis"],
+      "icon": "frontend/public/logo.png"
+    },
+    "mac": {
+      "target": ["dmg"],
+      "icon": "frontend/public/logo.png",
+      "category": "public.app-category.music"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0",
+    "electron": "^40.4.1",
+    "electron-builder": "^26.7.0",
+    "wait-on": "^7.2.0"
+  }
+}
