@@ -2,60 +2,20 @@ name: Release
 
 on:
   push:
-    branches: [main]
+    tags:
+      - 'v*'
 
 permissions:
   contents: write
 
 jobs:
-  # ── Step 1: Determine next version from conventional commits ────
-  version:
-    name: Determine Version
-    runs-on: ubuntu-latest
-    outputs:
-      new_release: ${{ steps.semantic.outputs.new_release_published }}
-      version: ${{ steps.semantic.outputs.new_release_version }}
-      tag: ${{ steps.semantic.outputs.new_release_git_tag }}
+  build-windows:
+    name: Build Windows Installer
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Semantic Release (dry run)
-        id: semantic
-        uses: cycjimmy/semantic-release-action@v4
-        with:
-          dry_run: true
-          extra_plugins: |
-            @semantic-release/commit-analyzer
-            @semantic-release/release-notes-generator
-            @semantic-release/changelog
-            @semantic-release/git
-            @semantic-release/github
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  # ── Step 2: Build installers on each platform ───────────────────
-  build:
-    name: Build (${{ matrix.os }})
-    needs: version
-    if: needs.version.outputs.new_release == 'true'
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        include:
-          - os: windows-latest
-            platform: win
-          - os: macos-latest
-            platform: mac
-
-    steps:
-      - uses: actions/checkout@v4
+          submodules: true
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -73,13 +33,18 @@ jobs:
           pip install poetry
           poetry install --no-interaction
 
-      - name: Bump version in package.json
-        working-directory: desktop
-        run: npm version ${{ needs.version.outputs.version }} --no-git-tag-version --allow-same-version
+      - name: Get version from tag
+        id: version
+        shell: bash
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
 
-      - name: Bump version in frontend package.json
+      - name: Set version in package.json
+        working-directory: desktop
+        run: npm version ${{ steps.version.outputs.VERSION }} --no-git-tag-version --allow-same-version
+
+      - name: Set version in frontend package.json
         working-directory: desktop/frontend
-        run: npm version ${{ needs.version.outputs.version }} --no-git-tag-version --allow-same-version
+        run: npm version ${{ steps.version.outputs.VERSION }} --no-git-tag-version --allow-same-version
 
       - name: Install frontend dependencies
         working-directory: desktop/frontend
@@ -89,59 +54,140 @@ jobs:
         working-directory: desktop
         run: npm ci
 
-      - name: Build frontend
+      - name: Build & package
         working-directory: desktop
-        run: npm run build
-
-      - name: Build installer (${{ matrix.platform }})
-        working-directory: desktop
-        run: npx electron-builder --${{ matrix.platform }} --publish=never
+        run: npm run dist:win
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload artifacts
+      - name: Upload Windows artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: installer-${{ matrix.platform }}
-          path: |
-            desktop/release/*.exe
-            desktop/release/*.dmg
-            desktop/release/*.yml
-            desktop/release/*.yaml
-          if-no-files-found: warn
+          name: windows-installer
+          path: desktop/release/*.exe
 
-  # ── Step 3: Create GitHub Release ───────────────────────────────
-  release:
-    name: Publish Release
-    needs: [version, build]
-    runs-on: ubuntu-latest
+  build-macos:
+    name: Build macOS Installer
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          submodules: true
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install streamrip dependencies
+        working-directory: repo
+        run: |
+          pip install poetry
+          poetry install --no-interaction
+
+      - name: Get version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
+
+      - name: Set version in package.json
+        working-directory: desktop
+        run: npm version ${{ steps.version.outputs.VERSION }} --no-git-tag-version --allow-same-version
+
+      - name: Set version in frontend package.json
+        working-directory: desktop/frontend
+        run: npm version ${{ steps.version.outputs.VERSION }} --no-git-tag-version --allow-same-version
+
+      - name: Install frontend dependencies
+        working-directory: desktop/frontend
+        run: npm ci
+
+      - name: Install Electron dependencies
+        working-directory: desktop
+        run: npm ci
+
+      - name: Build & package
+        working-directory: desktop
+        run: npm run dist:mac
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload macOS artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-installer
+          path: desktop/release/*.dmg
+
+  release:
+    name: Create GitHub Release
+    needs: [build-windows, build-macos]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
-          path: artifacts
+          path: installers
           merge-multiple: true
 
-      - name: List artifacts
-        run: find artifacts -type f 2>/dev/null || echo "No artifacts found"
+      - name: List installers
+        run: find installers -type f
 
-      - name: Semantic Release
-        uses: cycjimmy/semantic-release-action@v4
+      - name: Generate changelog
+        id: changelog
+        run: |
+          PREV_TAG=$(git tag --sort=-version:refname | head -2 | tail -1 || echo "")
+          if [ -z "$PREV_TAG" ] || [ "$PREV_TAG" = "$GITHUB_REF_NAME" ]; then
+            COMMITS=$(git log --pretty=format:"- %s (%h)" HEAD)
+          else
+            COMMITS=$(git log --pretty=format:"- %s (%h)" ${PREV_TAG}..HEAD)
+          fi
+
+          FEATURES=$(echo "$COMMITS" | grep -i "^- feat" || echo "")
+          FIXES=$(echo "$COMMITS" | grep -i "^- fix" || echo "")
+          OTHER=$(echo "$COMMITS" | grep -iv "^- feat\|^- fix" || echo "")
+
+          {
+            echo "CHANGELOG<<EOF"
+            echo "## What's Changed"
+            echo ""
+            if [ -n "$FEATURES" ]; then
+              echo "### Features"
+              echo "$FEATURES"
+              echo ""
+            fi
+            if [ -n "$FIXES" ]; then
+              echo "### Bug Fixes"
+              echo "$FIXES"
+              echo ""
+            fi
+            if [ -n "$OTHER" ]; then
+              echo "### Other"
+              echo "$OTHER"
+              echo ""
+            fi
+            echo "---"
+            echo ""
+            echo "**Full Changelog**: https://github.com/${{ github.repository }}/commits/${{ github.ref_name }}"
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
         with:
-          extra_plugins: |
-            @semantic-release/commit-analyzer
-            @semantic-release/release-notes-generator
-            @semantic-release/changelog
-            @semantic-release/git
-            @semantic-release/github
+          name: streamrip-ui ${{ github.ref_name }}
+          body: ${{ steps.changelog.outputs.CHANGELOG }}
+          draft: false
+          prerelease: false
+          files: |
+            installers/*.exe
+            installers/*.dmg
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

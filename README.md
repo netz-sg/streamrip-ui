@@ -1,4 +1,4 @@
-﻿<p align="center">
+<p align="center">
   <img src="desktop/frontend/public/logo.png" alt="streamrip-ui" width="128" height="128" />
 </p>
 
@@ -148,51 +148,30 @@ streamrip-ui/
 
 ## Releasing
 
-This project uses [Conventional Commits](https://www.conventionalcommits.org/) for automatic versioning and changelog generation.
-
-### Commit Message Format
-
-```
-<type>(<scope>): <description>
-
-Types:
-  feat     â†’ new feature          (bumps MINOR version)
-  fix      â†’ bug fix              (bumps PATCH version)
-  docs     â†’ documentation only
-  style    â†’ formatting, no code change
-  refactor â†’ code change, no new feature or fix
-  perf     â†’ performance improvement
-  test     â†’ adding/fixing tests
-  chore    â†’ build process, dependencies
-  ci       â†’ CI configuration
-
-Breaking changes:
-  Add BREAKING CHANGE: in the commit body  â†’  bumps MAJOR version
-  Or use ! after type: feat!: new API
-```
+Releases are triggered by pushing a **version tag** (e.g. `v1.0.0`).
 
 ### Publish a Release
 
 ```bash
-# Feature added
-git commit -m "feat(search): add multi-source search"
+# Tag the current commit
+git tag v1.0.0
 
-# Bug fixed
-git commit -m "fix(downloads): correct progress calculation for large albums"
-
-# Breaking change
-git commit -m "feat(api)!: redesign config endpoint schema"
-
-# Push to main branch â†’ CI builds installers â†’ GitHub Release created automatically
-git push origin main
+# Push the tag - CI builds installers and creates a GitHub Release
+git push origin v1.0.0
 ```
 
 The CI pipeline will:
-1. Determine the next version from commit messages
-2. Update `package.json` versions
-3. Build Windows `.exe` and macOS `.dmg` installers
-4. Create a GitHub Release with changelog and attached installers
+1. Build Windows `.exe` installer (NSIS) and macOS `.dmg`
+2. Generate a changelog from commits since the last tag
+3. Create a GitHub Release with attached installers
 
+### Version Bump Examples
+
+```bash
+git tag v1.0.1   # Patch release
+git tag v1.1.0   # Minor release
+git tag v2.0.0   # Major release
+```
 ## Credits
 
 - **[streamrip](https://github.com/nathom/streamrip)** by [@nathom](https://github.com/nathom) â€” the core music downloading engine that powers this application

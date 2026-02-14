@@ -23,6 +23,10 @@ env/
 *.swo
 *~
 
+# Agent / AI config (local only)
+.claude/
+.github/agents/
+
 # OS
 .DS_Store
 Thumbs.db
