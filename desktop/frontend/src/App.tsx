@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import AppShell from './components/layout/AppShell';
 import HomePage from './pages/HomePage';
@@ -10,7 +10,7 @@ import WishlistPage from './pages/WishlistPage';
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Toaster
         position="bottom-right"
         offset={16}
@@ -38,6 +38,6 @@ export default function App() {
           <Route path="/wishlist" element={<WishlistPage />} />
         </Route>
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }

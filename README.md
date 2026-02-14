@@ -6,7 +6,7 @@
 
 <p align="center">
   <strong>A modern desktop GUI for <a href="https://github.com/nathom/streamrip">streamrip</a></strong><br />
-  Download high-quality music from Qobuz, TIDAL, Deezer &amp; SoundCloud â€” without the terminal.
+  Download high-quality music from Qobuz, TIDAL, Deezer &amp; SoundCloud — without the terminal.
 </p>
 
 <p align="center">
@@ -20,30 +20,30 @@
 
 ## What is this?
 
-**streamrip-ui** is an Electron-based desktop application that wraps [nathom's streamrip](https://github.com/nathom/streamrip) library in a polished, dark-themed interface. It provides everything the CLI does â€” album/track/artist/playlist downloads, search, quality selection, metadata tagging â€” but with a visual experience designed for daily use.
+**streamrip-ui** is an Electron-based desktop application that wraps [nathom's streamrip](https://github.com/nathom/streamrip) library in a polished, dark-themed interface. It provides everything the CLI does — album/track/artist/playlist downloads, search, quality selection, metadata tagging — but with a visual experience designed for daily use.
 
 > **Note:** This project does not bundle or redistribute streamrip. It depends on a local checkout of the [streamrip](https://github.com/nathom/streamrip) repository as its backend engine.
 
 ## Features
 
-- **Paste & Download** â€” Drop a Qobuz, TIDAL, Deezer, or SoundCloud URL and download in one click
-- **Real-Time Progress** â€” Per-track progress bars with speed and ETA, powered by a custom progress hook
-- **Rich Previews** â€” Album, track, artist, and playlist views with cover art, tracklists, and quality badges
-- **Multi-Source Search** â€” Search across all four platforms with instant results
-- **Download Queue** â€” Concurrent downloads with queue management, history, and wishlist
-- **Full Configuration** â€” Every streamrip setting exposed: quality, filepaths, filters, metadata, conversion, database
-- **Keyboard Shortcuts** â€” `Ctrl+1â€“6` navigation, `Ctrl+F` search focus, `Escape` to dismiss
-- **Drag & Drop** â€” Drop URLs directly onto the window to start previewing
-- **Backend Health Monitoring** â€” Live status indicator with auto-reconnect
-- **Toast Notifications** â€” Download started, completed, failed â€” always in the loop
+- **Paste & Download** — Drop a Qobuz, TIDAL, Deezer, or SoundCloud URL and download in one click
+- **Real-Time Progress** — Per-track progress bars with speed and ETA, powered by a custom progress hook
+- **Rich Previews** — Album, track, artist, and playlist views with cover art, tracklists, and quality badges
+- **Multi-Source Search** — Search across all four platforms with instant results
+- **Download Queue** — Concurrent downloads with queue management, history, and wishlist
+- **Full Configuration** — Every streamrip setting exposed: quality, filepaths, filters, metadata, conversion, database
+- **Keyboard Shortcuts** — `Ctrl+1—6` navigation, `Ctrl+F` search focus, `Escape` to dismiss
+- **Drag & Drop** — Drop URLs directly onto the window to start previewing
+- **Backend Health Monitoring** — Live status indicator with auto-reconnect
+- **Toast Notifications** — Download started, completed, failed — always in the loop
 
 ## Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
 | **Shell** | Electron (frameless, custom titlebar) |
-| **Frontend** | React 19 Â· TypeScript Â· Tailwind CSS v4 Â· Zustand Â· Framer Motion |
-| **Backend** | Python Â· FastAPI Â· WebSocket Â· SQLite |
+| **Frontend** | React 19 · TypeScript · Tailwind CSS v4 · Zustand · Framer Motion |
+| **Backend** | Python · FastAPI · WebSocket · SQLite |
 | **Engine** | [streamrip](https://github.com/nathom/streamrip) by [@nathom](https://github.com/nathom) |
 
 ## Screenshots
@@ -52,7 +52,7 @@
 
 <!--
 <p align="center">
-  <img src="docs/screenshots/home.png" width="800" alt="Home â€” Album Preview" />
+  <img src="docs/screenshots/home.png" width="800" alt="Home — Album Preview" />
   <br /><em>Album preview with tracklist and quality info</em>
 </p>
 -->
@@ -105,10 +105,10 @@ npm run dist:mac      # macOS .dmg
 
 ## Usage
 
-1. **Launch** the app â€” the Python backend starts automatically
+1. **Launch** the app — the Python backend starts automatically
 2. **Paste** a music URL into the input bar on the Home page
 3. **Preview** the album, track, artist, or playlist with full metadata
-4. **Download** with one click â€” monitor progress in the Downloads tab
+4. **Download** with one click — monitor progress in the Downloads tab
 5. **Configure** quality, output paths, filters, and more in Settings
 
 ### Keyboard Shortcuts
@@ -162,35 +162,24 @@ streamrip-ui/
 
 ## Releasing
 
-Releases are managed via a single npm command that handles everything:
+Releases are managed via an interactive CLI — no arguments needed:
 
 ```bash
 cd desktop
-npm run release -- <version> "<description>"
+npm run release
 ```
 
-### Version
+The CLI guides you step-by-step:
 
-| Argument | Effect | Example |
-|----------|--------|---------|
-| `patch` | Auto-bump patch (1.0.0 → 1.0.1) | `npm run release -- patch "fix: progress bar"` |
-| `minor` | Auto-bump minor (1.0.0 → 1.1.0) | `npm run release -- minor "feat: drag & drop"` |
-| `major` | Auto-bump major (1.0.0 → 2.0.0) | `npm run release -- major "feat!: new API"` |
-| `X.Y.Z` | Explicit version | `npm run release -- 2.1.0 "feat: search"` |
-
-### Description Format
-
-Prefix entries with `feat:` or `fix:` to auto-categorize them in the changelog. Separate multiple entries with commas:
-
-```bash
-npm run release -- patch "fix: progress bar, fix: sidebar badge count"
-npm run release -- minor "feat: multi-source search, fix: UI glitch, chore: deps update"
-```
+1. **Version type** — choose `patch`, `minor`, `major`, or enter a custom version
+2. **Changes** — add entries one by one as Feature, Bug Fix, or Other
+3. **Summary** — review everything in a formatted overview
+4. **Confirm** — nothing is pushed until you say yes
 
 ### What the script does
 
 1. Updates `package.json` versions (desktop + frontend)
-2. Writes a `CHANGELOG.md` entry with date and categorized changes
+2. Writes a categorized `CHANGELOG.md` entry with date
 3. Commits all staged changes
 4. Creates an annotated git tag (`vX.Y.Z`)
 5. Pushes commit + tag to `origin/main`
@@ -198,12 +187,12 @@ npm run release -- minor "feat: multi-source search, fix: UI glitch, chore: deps
 
 ## Credits
 
-- **[streamrip](https://github.com/nathom/streamrip)** by [@nathom](https://github.com/nathom) â€” the core music downloading engine that powers this application
+- **[streamrip](https://github.com/nathom/streamrip)** by [@nathom](https://github.com/nathom) — the core music downloading engine that powers this application
 - Built with [Electron](https://www.electronjs.org/), [React](https://react.dev/), [FastAPI](https://fastapi.tiangolo.com/), and [Tailwind CSS](https://tailwindcss.com/)
 
 ## License
 
-This project is licensed under the [GNU General Public License v3.0](LICENSE) â€” the same license as streamrip.
+This project is licensed under the [GNU General Public License v3.0](LICENSE) — the same license as streamrip.
 
 ## Disclaimer
 

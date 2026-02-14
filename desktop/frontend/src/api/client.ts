@@ -11,11 +11,31 @@ import type {
   WishlistResponse,
 } from './types';
 
+// In production (file://), we need the absolute backend URL.
+// In dev mode, Vite proxy handles /api → localhost:18723.
 const api = axios.create({
   baseURL: '/api',
   timeout: 30000,
   headers: { 'Content-Type': 'application/json' },
 });
+
+// Resolve backend URL at runtime (called once from main.tsx)
+let _initialized = false;
+export async function initApiClient(): Promise<void> {
+  if (_initialized) return;
+  _initialized = true;
+
+  const isElectron = !!(window as any).electron;
+  if (isElectron && window.location.protocol === 'file:') {
+    try {
+      const port = await (window as any).electron.getBackendPort();
+      api.defaults.baseURL = `http://127.0.0.1:${port}/api`;
+    } catch {
+      // fallback
+      api.defaults.baseURL = 'http://127.0.0.1:18723/api';
+    }
+  }
+}
 
 export async function parseUrl(url: string): Promise<UrlParseResponse> {
   const { data } = await api.post('/url/parse', { url });
@@ -128,7 +148,10 @@ export async function clearWishlist(): Promise<void> {
 
 export async function checkHealth(): Promise<boolean> {
   try {
-    const { data } = await axios.get('/health', { timeout: 3000 });
+    const baseUrl = api.defaults.baseURL as string;
+    // Health endpoint is at the root, not under /api
+    const healthUrl = baseUrl.replace(/\/api$/, '/health');
+    const { data } = await axios.get(healthUrl, { timeout: 3000 });
     return data?.status === 'ok';
   } catch {
     return false;

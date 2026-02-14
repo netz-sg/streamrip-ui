@@ -10,6 +10,10 @@ class WebSocketManager {
     this.url = url;
   }
 
+  setUrl(url: string) {
+    this.url = url;
+  }
+
   connect() {
     if (this.ws?.readyState === WebSocket.OPEN) return;
 
@@ -60,5 +64,23 @@ class WebSocketManager {
   }
 }
 
+// Default URL for dev mode (Vite proxy); overridden in production via initWebSocket()
 const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-export const wsManager = new WebSocketManager(`${wsProtocol}//${window.location.host}/ws`);
+const defaultUrl = window.location.protocol === 'file:'
+  ? 'ws://127.0.0.1:18723/ws'
+  : `${wsProtocol}//${window.location.host}/ws`;
+
+export const wsManager = new WebSocketManager(defaultUrl);
+
+// Called from main.tsx after resolving the backend port
+export async function initWebSocket(): Promise<void> {
+  const isElectron = !!(window as any).electron;
+  if (isElectron && window.location.protocol === 'file:') {
+    try {
+      const port = await (window as any).electron.getBackendPort();
+      wsManager.setUrl(`ws://127.0.0.1:${port}/ws`);
+    } catch {
+      // keep default
+    }
+  }
+}
