@@ -1,3 +1,5 @@
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-support-yellow?style=flat&logo=buy-me-a-coffee)](https://buymeacoffee.com/sgnetz)
+
 ﻿<p align="center">
   <img src="desktop/frontend/public/logo.png" alt="streamrip-ui" width="128" height="128" />
 </p>
